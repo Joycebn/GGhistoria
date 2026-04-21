@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeroQuiz — Plataforma de Jogos Educativos</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="star-bg"></div>
+
+<!-- ===== HEADER ===== -->
+<header class="header" id="main-header">
+  <div class="logo">Hero<span>Quiz</span></div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="btn btn-ghost btn-sm" onclick="goHome()">🏠 Início</button>
+    <button class="btn btn-secondary btn-sm" onclick="showScreen('editor')">✏️ Editor</button>
+    <button class="btn btn-accent btn-sm" onclick="showScreen('ia')">🤖 IA</button>
+  </div>
+</header>
+
+<!-- ========== SCREEN: HOME ========== -->
+<div class="screen active" id="screen-home">
+  <div class="home-hero">
+    <h1>HERO QUIZ</h1>
+    <p>🦸 Plataforma de Jogos Educativos com Super-Heróis</p>
+  </div>
+  <div class="home-modes">
+    <div class="mode-card" onclick="startMode('individual')">
+      <span class="icon">🦸</span>
+      <h2>Individual</h2>
+      <p>Escolha seu herói e jogue sozinho no seu cenário favorito</p>
+    </div>
+    <div class="mode-card" onclick="startMode('equipes')">
+      <span class="icon">⚔️</span>
+      <h2>Equipes</h2>
+      <p>Professor controla tudo. Disputem em equipes em tempo real!</p>
+    </div>
+    <div class="mode-card" onclick="showScreen('editor')">
+      <span class="icon">✏️</span>
+      <h2>Editor</h2>
+      <p>Crie e edite seus jogos. Funciona offline também!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: PERSONAGENS ========== -->
+<div class="screen" id="screen-personagens">
+  <div style="position:relative;z-index:1;padding:24px;max-width:1000px;margin:0 auto;width:100%;">
+    <h2 class="section-title">🦸 Escolha seu Personagem</h2>
+    <p class="section-sub">Quem vai te representar na batalha do conhecimento?</p>
+
+    <div class="char-filters">
+      <button class="filter-btn active" onclick="filterChars('todos')">Todos</button>
+      <button class="filter-btn" onclick="filterChars('heroi')">Super-Heróis</button>
+      <button class="filter-btn" onclick="filterChars('villao')">Vilões</button>
+      <button class="filter-btn" onclick="filterChars('desenho')">Desenhos</button>
+      <button class="filter-btn" onclick="filterChars('feminino')">Femininos</button>
+      <button class="filter-btn" onclick="filterChars('masculino')">Masculinos</button>
+    </div>
+
+    <div class="chars-grid" id="chars-grid"></div>
+
+    <div class="text-center mt-16">
+      <button class="btn btn-secondary btn-lg" id="btn-ir-cenario" onclick="showScreen('cenario')" disabled>
+        Escolher Cenário →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: CENÁRIO ========== -->
+<div class="screen" id="screen-cenario">
+  <div style="position:relative;z-index:1;padding:24px;max-width:900px;margin:0 auto;width:100%;">
+    <h2 class="section-title">🌍 Escolha o Cenário</h2>
+    <p class="section-sub">Onde a batalha vai acontecer?</p>
+
+    <div class="scenarios-grid">
+      <div class="scenario-card scenario-city" onclick="selectScenario('city','Metrópole','🏙️')">
+        <span class="scenario-emoji">🏙️</span>
+        <h3>Metrópole</h3>
+        <p>Cidade futurista</p>
+      </div>
+      <div class="scenario-card scenario-space" onclick="selectScenario('space','Espaço','🚀')">
+        <span class="scenario-emoji">🚀</span>
+        <h3>Espaço</h3>
+        <p>Galáxia distante</p>
+      </div>
+      <div class="scenario-card scenario-forest" onclick="selectScenario('forest','Floresta','🌳')">
+        <span class="scenario-emoji">🌳</span>
+        <h3>Floresta</h3>
+        <p>Floresta encantada</p>
+      </div>
+      <div class="scenario-card scenario-volcano" onclick="selectScenario('volcano','Vulcão','🌋')">
+        <span class="scenario-emoji">🌋</span>
+        <h3>Vulcão</h3>
+        <p>Terra de lava</p>
+      </div>
+      <div class="scenario-card scenario-ocean" onclick="selectScenario('ocean','Oceano','🌊')">
+        <span class="scenario-emoji">🌊</span>
+        <h3>Oceano</h3>
+        <p>Fundo do mar</p>
+      </div>
+      <div class="scenario-card scenario-snow" onclick="selectScenario('snow','Ártico','❄️')">
+        <span class="scenario-emoji">❄️</span>
+        <h3>Ártico</h3>
+        <p>Tundra gelada</p>
+      </div>
+    </div>
+
+    <div class="text-center mt-16">
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('personagens')" style="margin-right:12px;">← Voltar</button>
+      <button class="btn btn-secondary btn-lg" id="btn-ir-preview" onclick="showPreview()" disabled>
+        Ver Arena →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: PREVIEW ARENA ========== -->
+<div class="screen" id="screen-preview">
+  <div style="position:relative;z-index:1;padding:24px;max-width:800px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;gap:24px;">
+    <h2 class="section-title">⚡ Arena de Batalha</h2>
+
+    <div class="preview-arena">
+      <div class="arena-bg" id="arena-bg">
+        <div class="arena-chars" id="arena-chars"></div>
+        <div class="arena-title" id="arena-title">Pronto para jogar?</div>
+        <div class="arena-sub" id="arena-sub"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+      <button class="btn btn-ghost" onclick="showScreen('cenario')">← Mudar Cenário</button>
+      <button class="btn btn-secondary btn-lg" onclick="showScreen('jogos')">Escolher Jogo ⚡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: JOGOS ========== -->
+<div class="screen" id="screen-jogos">
+  <div style="position:relative;z-index:1;padding:24px;max-width:1000px;margin:0 auto;width:100%;">
+    <h2 class="section-title">🎮 Escolha o Jogo</h2>
+    <p class="section-sub">Qual desafio você vai encarar hoje?</p>
+
+    <div class="games-grid">
+      <div class="game-card quiz" onclick="startGame('quiz')">
+        <span class="game-icon">❓</span>
+        <div class="game-name">Quiz</div>
+        <div class="game-desc">Responda perguntas de múltipla escolha</div>
+        <div class="game-badge">Popular</div>
+      </div>
+      <div class="game-card forca" onclick="startGame('forca')">
+        <span class="game-icon">🎭</span>
+        <div class="game-name">Forca</div>
+        <div class="game-desc">Descubra a palavra letra por letra</div>
+      </div>
+      <div class="game-card relacionar" onclick="startGame('relacionar')">
+        <span class="game-icon">🔗</span>
+        <div class="game-name">Relacionar</div>
+        <div class="game-desc">Conecte conceitos e definições</div>
+      </div>
+      <div class="game-card caixa" onclick="startGame('caixa')">
+        <span class="game-icon">📦</span>
+        <div class="game-name">Abrir Caixa</div>
+        <div class="game-desc">Abra caixas e responda perguntas</div>
+      </div>
+      <div class="game-card cacapalavras" onclick="startGame('cacapalavras')">
+        <span class="game-icon">🔍</span>
+        <div class="game-name">Caça-Palavras</div>
+        <div class="game-desc">Encontre palavras escondidas</div>
+      </div>
+    </div>
+
+    <div class="text-center mt-24">
+      <button class="btn btn-ghost" onclick="showScreen('preview')">← Voltar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: QUIZ ========== -->
+<div class="screen" id="screen-quiz">
+  <div style="position:relative;z-index:1;padding:24px;max-width:800px;margin:0 auto;width:100%;">
+    <div class="quiz-header">
+      <div class="quiz-progress">
+        <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill"></div></div>
+        <div class="progress-text" id="quiz-progress-text">Pergunta 1 de 5</div>
+      </div>
+      <div class="score-badge">⭐ <span id="quiz-score">0</span> pts</div>
+    </div>
+
+    <div class="quiz-char-display">
+      <span class="quiz-char-emoji" id="quiz-char-emoji">🦸</span>
+      <div class="quiz-char-info">
+        <h4 id="quiz-char-name">Herói</h4>
+        <p id="quiz-scenario-name">Metrópole</p>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-num" id="quiz-question-num">Pergunta 1</div>
+      <div class="question-text" id="quiz-question-text">Carregando...</div>
+    </div>
+
+    <div class="options-grid" id="quiz-options"></div>
+    <div class="feedback-msg" id="quiz-feedback"></div>
+
+    <div class="text-center mt-16">
+      <button class="btn btn-primary" id="btn-next-question" onclick="nextQuestion()" style="display:none;">
+        Próxima →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: FORCA ========== -->
+<div class="screen" id="screen-forca">
+  <div style="position:relative;z-index:1;padding:24px;max-width:700px;margin:0 auto;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <div class="score-badge">⭐ <span id="forca-score">0</span> pts</div>
+      <div class="attempts-display" id="forca-hearts"></div>
+    </div>
+
+    <div class="forca-container">
+      <svg class="forca-svg" width="200" height="220" viewBox="0 0 200 220" id="forca-svg">
+        <line x1="20" y1="210" x2="180" y2="210" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+        <line x1="60" y1="210" x2="60" y2="20" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+        <line x1="60" y1="20" x2="130" y2="20" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+        <line x1="130" y1="20" x2="130" y2="50" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+        <!-- Head -->
+        <circle id="forca-head" cx="130" cy="70" r="20" stroke="#ec4899" stroke-width="3" fill="none" opacity="0"/>
+        <!-- Body -->
+        <line id="forca-body" x1="130" y1="90" x2="130" y2="145" stroke="#ec4899" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        <!-- Left arm -->
+        <line id="forca-larm" x1="130" y1="110" x2="100" y2="130" stroke="#ec4899" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        <!-- Right arm -->
+        <line id="forca-rarm" x1="130" y1="110" x2="160" y2="130" stroke="#ec4899" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        <!-- Left leg -->
+        <line id="forca-lleg" x1="130" y1="145" x2="105" y2="175" stroke="#ec4899" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        <!-- Right leg -->
+        <line id="forca-rleg" x1="130" y1="145" x2="155" y2="175" stroke="#ec4899" stroke-width="3" stroke-linecap="round" opacity="0"/>
+      </svg>
+
+      <div class="forca-dica" id="forca-dica">Dica: ...</div>
+      <div class="forca-palavra" id="forca-palavra"></div>
+      <div class="keyboard-grid" id="forca-keyboard"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: RELACIONAR ========== -->
+<div class="screen" id="screen-relacionar">
+  <div style="position:relative;z-index:1;padding:24px;max-width:800px;margin:0 auto;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <h2 class="section-title" style="margin-bottom:0;">🔗 Relacionar Colunas</h2>
+      <div class="score-badge">⭐ <span id="rel-score">0</span> pts</div>
+    </div>
+    <p class="section-sub mb-16" style="text-align:left;">Clique em um item da esquerda e depois o correspondente da direita</p>
+
+    <div class="match-grid">
+      <div class="match-col" id="rel-left"></div>
+      <div class="match-col" id="rel-right"></div>
+    </div>
+
+    <div class="text-center mt-24">
+      <button class="btn btn-secondary" id="btn-rel-verificar" onclick="verificarRelacionar()">Verificar ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: ABRIR CAIXA ========== -->
+<div class="screen" id="screen-caixa">
+  <div style="position:relative;z-index:1;padding:24px;max-width:800px;margin:0 auto;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <h2 class="section-title" style="margin-bottom:0;">📦 Abrir a Caixa</h2>
+      <div class="score-badge">⭐ <span id="caixa-score">0</span> pts</div>
+    </div>
+    <p class="section-sub mb-16" style="text-align:left;">Escolha uma caixa para revelar a pergunta!</p>
+
+    <div class="boxes-grid" id="boxes-grid"></div>
+
+    <div class="box-reveal-question" id="box-reveal-question">
+      <div class="question-num">Pergunta revelada!</div>
+      <div class="question-text mb-16" id="box-question-text"></div>
+      <div class="options-grid" id="box-options"></div>
+      <div class="feedback-msg" id="box-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: CAÇA-PALAVRAS ========== -->
+<div class="screen" id="screen-cacapalavras">
+  <div style="position:relative;z-index:1;padding:24px;max-width:900px;margin:0 auto;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+      <h2 class="section-title" style="margin-bottom:0;">🔍 Caça-Palavras</h2>
+      <div class="score-badge">⭐ <span id="caca-score">0</span> pts | 🕐 <span id="caca-timer">00:00</span></div>
+    </div>
+
+    <div class="word-search-layout">
+      <div class="word-grid-container">
+        <div class="word-grid" id="word-grid"></div>
+      </div>
+      <div class="words-panel">
+        <h3>🎯 Encontre:</h3>
+        <div id="words-to-find"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: EQUIPES ========== -->
+<div class="screen" id="screen-equipes">
+  <div style="position:relative;z-index:1;padding:24px;max-width:900px;margin:0 auto;width:100%;">
+    <h2 class="section-title">⚔️ Modo Equipes</h2>
+    <p class="section-sub">O professor controla tudo aqui!</p>
+
+    <!-- Setup -->
+    <div id="equipes-setup">
+      <div class="teams-setup">
+        <div class="team-card-setup team-a">
+          <h3 style="margin-bottom:12px;font-family:'Bangers',cursive;font-size:1.3rem;color:var(--blue);">Equipe A</h3>
+          <input type="text" class="team-name-input" id="team-a-name" placeholder="Nome da Equipe A" value="Time Azul">
+          <div style="font-size:0.8rem;color:var(--muted);">Escolha personagens:</div>
+          <div id="team-a-chars" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+        </div>
+        <div class="team-card-setup team-b">
+          <h3 style="margin-bottom:12px;font-family:'Bangers',cursive;font-size:1.3rem;color:var(--accent);">Equipe B</h3>
+          <input type="text" class="team-name-input" id="team-b-name" placeholder="Nome da Equipe B" value="Time Rosa">
+          <div style="font-size:0.8rem;color:var(--muted);">Escolha personagens:</div>
+          <div id="team-b-chars" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <div class="card mb-16">
+        <div class="card-title">🎮 Selecionar Jogo</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+          <button class="btn btn-primary" onclick="startTeamGame('quiz')">❓ Quiz</button>
+          <button class="btn btn-accent" onclick="startTeamGame('forca')">🎭 Forca</button>
+          <button class="btn btn-secondary" onclick="startTeamGame('caixa')">📦 Caixa</button>
+          <button class="btn btn-green" onclick="startTeamGame('relacionar')">🔗 Relacionar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scoreboard em jogo -->
+    <div id="equipes-scoreboard" style="display:none;">
+      <div class="teams-setup">
+        <div class="team-card-setup team-a" style="text-align:center;">
+          <h3 id="team-a-display" style="font-family:'Bangers',cursive;font-size:1.5rem;color:var(--blue);">Time Azul</h3>
+          <div class="team-score" id="team-a-score">0</div>
+          <div style="font-size:0.8rem;color:var(--muted);">pontos</div>
+        </div>
+        <div class="team-card-setup team-b" style="text-align:center;">
+          <h3 id="team-b-display" style="font-family:'Bangers',cursive;font-size:1.5rem;color:var(--accent);">Time Rosa</h3>
+          <div class="team-score" id="team-b-score">0</div>
+          <div style="font-size:0.8rem;color:var(--muted);">pontos</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div id="team-current-question" style="font-weight:800;font-size:1.1rem;margin-bottom:16px;"></div>
+        <div id="team-options" style="display:grid;gap:10px;"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn btn-blue btn-sm" onclick="addTeamPoint('a')" style="background:var(--blue);color:white;">
+          +10 pts → Time A
+        </button>
+        <button class="btn btn-accent btn-sm" onclick="addTeamPoint('b')">
+          +10 pts → Time B
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="nextTeamQuestion()">Próxima ❓</button>
+        <button class="btn btn-ghost btn-sm" onclick="endTeamGame()">Encerrar 🏆</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: EDITOR ========== -->
+<div class="screen" id="screen-editor">
+  <div style="position:relative;z-index:1;padding:24px;max-width:1000px;margin:0 auto;width:100%;">
+    <h2 class="section-title">✏️ Editor de Jogos</h2>
+    <p class="section-sub">Crie e edite seus jogos. Salva automaticamente!</p>
+
+    <div class="editor-layout">
+      <div class="editor-sidebar">
+        <div style="font-size:0.8rem;color:var(--muted);font-weight:700;margin-bottom:8px;">TIPO DE JOGO</div>
+        <button class="editor-game-btn active" onclick="setEditorType('quiz')" id="edit-btn-quiz">
+          ❓ <span>Quiz</span>
+        </button>
+        <button class="editor-game-btn" onclick="setEditorType('forca')" id="edit-btn-forca">
+          🎭 <span>Forca</span>
+        </button>
+        <button class="editor-game-btn" onclick="setEditorType('relacionar')" id="edit-btn-relacionar">
+          🔗 <span>Relacionar</span>
+        </button>
+        <button class="editor-game-btn" onclick="setEditorType('caixa')" id="edit-btn-caixa">
+          📦 <span>Abrir Caixa</span>
+        </button>
+        <button class="editor-game-btn" onclick="setEditorType('cacapalavras')" id="edit-btn-cacapalavras">
+          🔍 <span>Caça-Palavras</span>
+        </button>
+
+        <div style="margin-top:auto;">
+          <div style="font-size:0.8rem;color:var(--muted);font-weight:700;margin-bottom:8px;margin-top:16px;">JOGOS SALVOS</div>
+          <div id="saved-games-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+      </div>
+
+      <div class="editor-main">
+        <div class="editor-section">
+          <h3>📋 Informações do Jogo</h3>
+          <div class="form-group">
+            <label class="form-label">Título do Jogo</label>
+            <input type="text" class="form-input" id="editor-titulo" placeholder="Ex: Revisão de Matemática">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Matéria / Tema</label>
+            <input type="text" class="form-input" id="editor-materia" placeholder="Ex: Matemática — Equações">
+          </div>
+        </div>
+
+        <!-- QUIZ EDITOR -->
+        <div class="editor-section" id="editor-quiz-section">
+          <h3>❓ Perguntas do Quiz</h3>
+          <div id="quiz-questions-list"></div>
+          <button class="add-question-btn" onclick="addQuizQuestion()">+ Adicionar Pergunta</button>
+        </div>
+
+        <!-- FORCA EDITOR -->
+        <div class="editor-section hidden" id="editor-forca-section">
+          <h3>🎭 Palavras da Forca</h3>
+          <div id="forca-words-list"></div>
+          <button class="add-question-btn" onclick="addForcaWord()">+ Adicionar Palavra</button>
+        </div>
+
+        <!-- RELACIONAR EDITOR -->
+        <div class="editor-section hidden" id="editor-relacionar-section">
+          <h3>🔗 Pares para Relacionar</h3>
+          <div id="relacionar-pairs-list"></div>
+          <button class="add-question-btn" onclick="addRelacionarPar()">+ Adicionar Par</button>
+        </div>
+
+        <!-- CAIXA EDITOR -->
+        <div class="editor-section hidden" id="editor-caixa-section">
+          <h3>📦 Perguntas das Caixas</h3>
+          <div id="caixa-questions-list"></div>
+          <button class="add-question-btn" onclick="addCaixaQuestion()">+ Adicionar Caixa/Pergunta</button>
+        </div>
+
+        <!-- CAÇA-PALAVRAS EDITOR -->
+        <div class="editor-section hidden" id="editor-caca-section">
+          <h3>🔍 Palavras para o Caça-Palavras</h3>
+          <p style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">Adicione as palavras que vão aparecer no caça-palavras (até 10)</p>
+          <div id="caca-words-list"></div>
+          <button class="add-question-btn" onclick="addCacaWord()">+ Adicionar Palavra</button>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="saveGame()">💾 Salvar Jogo</button>
+          <button class="btn btn-secondary" onclick="playCurrentEditor()">▶️ Jogar Este</button>
+          <button class="btn btn-ghost" onclick="clearEditor()">🗑️ Limpar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: IA ========== -->
+<div class="screen" id="screen-ia">
+  <div style="position:relative;z-index:1;padding:24px;max-width:800px;margin:0 auto;width:100%;">
+    <h2 class="section-title">🤖 Assistente de IA</h2>
+    <p class="section-sub">Cole um texto e a IA cria o jogo automaticamente!</p>
+
+    <!-- Gate de pagamento -->
+    <div class="ia-gate" id="ia-gate">
+      <div class="lock-icon">🔐</div>
+      <h2>Funcionalidade Premium</h2>
+      <p>
+        A Assistente de IA usa a API do Claude (Anthropic) para transformar automaticamente
+        qualquer texto em perguntas de quiz, palavras para forca, pares para relacionar e muito mais.<br><br>
+        Para ajudar a pagar o custo da API, pedimos uma pequena contribuição:
+      </p>
+      <div class="price-badge">R$ 5,00</div>
+      <p>Faça um PIX para a chave abaixo e depois insira o código de desbloqueio:</p>
+      <div class="pix-key" id="pix-key-display">PIX: sua-chave-pix@email.com</div>
+      <div class="ia-unlock-form">
+        <input type="text" class="form-input" id="unlock-code-input"
+          placeholder="Código de desbloqueio" style="max-width:250px;">
+        <button class="btn btn-secondary" onclick="unlockIA()">Desbloquear 🔓</button>
+      </div>
+      <p style="font-size:0.8rem;margin-top:12px;color:var(--muted);">
+        Código de demonstração: <strong>DEMO2024</strong>
+      </p>
+    </div>
+
+    <!-- IA desbloqueada -->
+    <div class="ia-unlocked" id="ia-unlocked">
+      <div class="card mb-16" style="border-color:rgba(16,185,129,0.3);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:1.5rem;">✅</span>
+          <span style="font-weight:800;color:var(--green);">IA Desbloqueada!</span>
+        </div>
+        <p style="font-size:0.85rem;color:var(--muted);">Cole seu texto abaixo e escolha o tipo de jogo.</p>
+      </div>
+
+      <div class="ia-form">
+        <div class="form-group">
+          <label class="form-label">📄 Cole seu texto aqui (aula, artigo, resumo...)</label>
+          <textarea class="form-textarea" id="ia-texto" rows="8"
+            placeholder="Cole aqui o texto que quer usar para gerar o jogo..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🎮 Tipo de jogo para gerar</label>
+          <select class="form-select" id="ia-tipo">
+            <option value="quiz">❓ Quiz (5 perguntas)</option>
+            <option value="forca">🎭 Forca (8 palavras)</option>
+            <option value="relacionar">🔗 Relacionar Colunas (5 pares)</option>
+            <option value="cacapalavras">🔍 Caça-Palavras (10 palavras)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="gerarComIA()">
+          🤖 Gerar com IA
+        </button>
+      </div>
+
+      <div class="ia-result" id="ia-result">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="font-size:1.5rem;">✨</span>
+          <span style="font-weight:800;color:var(--green);">Gerado com sucesso!</span>
+        </div>
+        <div id="ia-result-content"></div>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="importarParaEditor()">📥 Importar para Editor</button>
+          <button class="btn btn-primary" onclick="jogarGerado()">▶️ Jogar Agora</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SCREEN: RESULTADO ========== -->
+<div class="screen" id="screen-resultado">
+  <div style="position:relative;z-index:1;padding:24px;max-width:600px;margin:0 auto;width:100%;text-align:center;">
+    <div style="font-size:5rem;margin-bottom:8px;">🏆</div>
+    <h1 style="font-family:'Bangers',cursive;font-size:3rem;letter-spacing:3px;color:var(--secondary);">PARABÉNS!</h1>
+    <p style="color:var(--muted);margin-bottom:24px;" id="resultado-subtitle">Você completou o desafio!</p>
+
+    <div class="podium" id="resultado-podium">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="card mb-16">
+      <div style="font-size:3rem;font-family:'Bangers',cursive;color:var(--secondary);" id="resultado-score">0</div>
+      <div style="color:var(--muted);font-size:0.9rem;">pontos conquistados</div>
+      <div style="margin-top:12px;font-weight:700;" id="resultado-msg"></div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="showScreen('jogos')">🎮 Jogar Novamente</button>
+      <button class="btn btn-secondary" onclick="goHome()">🏠 Início</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="goHome()" id="nav-home">
+    <span class="nav-icon">🏠</span><span>Início</span>
+  </button>
+  <button class="nav-btn" onclick="showScreen('jogos')" id="nav-jogos">
+    <span class="nav-icon">🎮</span><span>Jogos</span>
+  </button>
+  <button class="nav-btn" onclick="showScreen('equipes')" id="nav-equipes">
+    <span class="nav-icon">⚔️</span><span>Equipes</span>
+  </button>
+  <button class="nav-btn" onclick="showScreen('editor')" id="nav-editor">
+    <span class="nav-icon">✏️</span><span>Editor</span>
+  </button>
+  <button class="nav-btn" onclick="showScreen('ia')" id="nav-ia">
+    <span class="nav-icon">🤖</span><span>IA</span>
+  </button>
+</nav>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script src="/js/data.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
